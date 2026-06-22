@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PropertyModel: Identifiable {
+struct PropertyModel: Identifiable, Codable, Hashable {
 
     let id = UUID()
 

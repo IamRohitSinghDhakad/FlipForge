@@ -11,11 +11,19 @@ import SwiftUI
 struct FlipforgeApp: App {
     
     @StateObject private var coordinator = AppCoordinator()
+
+       @StateObject private var router =
+       Router()
     
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(coordinator)
+                          .environmentObject(
+                              coordinator
+                          )
+                          .environmentObject(
+                              router
+                          )
                 .customToast(
                     manager: DependencyContainer.shared.toastManager
                 )

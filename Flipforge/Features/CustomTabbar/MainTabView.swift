@@ -6,41 +6,81 @@
 //
 
 import SwiftUI
+import Combine
+import Foundation
+
+import SwiftUI
 
 struct MainTabView: View {
 
-    @StateObject private var vm =
-    TabBarViewModel()
+    @EnvironmentObject var router: Router
+
+    @State private var selectedTab: AppTab = .home
 
     var body: some View {
 
-        ZStack(alignment: .bottom) {
+        NavigationStack(path: $router.path) {
 
-            currentScreen
+            ZStack(alignment: .bottom) {
 
-            CustomTabBar(
-                selectedTab: $vm.selectedTab
-            )
-            .padding(.horizontal, 5)
-            .padding(.bottom, 10)
+                tabContent
+
+                CustomTabBar(
+                    selectedTab: $selectedTab
+                )
+                .padding(.horizontal, 12)
+                .padding(.bottom, 10)
+            }
+            .ignoresSafeArea(.keyboard)
+
+            .navigationDestination(
+                for: AppRoute.self
+            ) { route in
+
+                switch route {
+
+                case .propertyInquiry(let property):
+
+                    PropertyInquiryView(
+                        property: property
+                    )
+
+                case .propertyResult:
+
+                    Text("Property Result")
+
+                case .profile:
+
+                    Text("Profile")
+
+                case .settings:
+
+                    Text("Settings")
+                }
+            }
         }
-        .ignoresSafeArea(.keyboard)
     }
-    
-    @ViewBuilder
-    private var currentScreen: some View {
-
-        switch vm.selectedTab {
-
-        case .home:
-            HomeView()
-        case .addProperty:
-            HomeView()
-        case .settings:
-            HomeView()
-        }
-    }
-
 }
 
+extension MainTabView {
 
+    @ViewBuilder
+    private var tabContent: some View {
+
+        switch selectedTab {
+
+        case .home:
+
+            HomeView()
+
+        case .addProperty:
+
+            EmptyView()
+
+        case .settings:
+
+            EmptyView()
+
+        }
+    }
+}

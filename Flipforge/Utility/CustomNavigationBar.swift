@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct CustomNavigationBar: View {
 
     let title: String
@@ -16,43 +18,43 @@ struct CustomNavigationBar: View {
 
     var body: some View {
 
-        VStack(spacing: 0) {
+        VStack(spacing: 10) {
 
-            HStack {
-
-                Button {
-
-                    onBack?()
-
-                } label: {
-
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 22, weight: .medium))
-                        .foregroundColor(.white)
-                        .frame(width: 44, height: 44)
-                }
-
-                Spacer()
-            }
-            .padding(.leading, 4)
-            .padding(.trailing, 16)
-
-            .padding(.horizontal, 12)
-
-            VStack(spacing: 6) {
+            ZStack {
 
                 Text(title)
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.system(size: 30, weight: .bold))
                     .foregroundColor(.white)
 
-                if let subtitle {
+                HStack {
 
-                    Text(subtitle)
-                        .font(.system(size: 18))
-                        .foregroundColor(.gray)
+                    Button {
+
+                        onBack?()
+
+                    } label: {
+
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 22, weight: .medium))
+                            .foregroundColor(.white)
+                            .frame(width: 44, height: 44)
+                    }
+
+                    Spacer()
                 }
             }
-            .padding(.top, 4)
+            .frame(height: 44)
+
+            if let subtitle {
+
+                Text(subtitle)
+                    .font(.system(size: 16))
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+            }
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 60) // Increase top spacing here
+        .padding(.bottom, 20)
     }
 }

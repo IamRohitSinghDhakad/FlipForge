@@ -17,21 +17,21 @@ enum Route: Hashable {
     // add other app routes here
 }
 
-@MainActor
-final class Router: ObservableObject {
-    @Published var path = NavigationPath()
-    // Push a new route
-    func navigate(to route: Route) {
-        path.append(route)
-    }
-    // Go back one step
-    func navigateBack() {
-        if path.count > 0 {
-            path.removeLast()
-        }
-    }
-    // Return to root
-    func navigateToRoot() {
-        path.removeLast(path.count)
-    }
-}
+//@MainActor
+//final class Router: ObservableObject {
+//    @Published var path = NavigationPath()
+//    // Push a new route
+//    func navigate(to route: Route) {
+//        path.append(route)
+//    }
+//    // Go back one step
+//    func navigateBack() {
+//        if path.count > 0 {
+//            path.removeLast()
+//        }
+//    }
+//    // Return to root
+//    func navigateToRoot() {
+//        path.removeLast(path.count)
+//    }
+//}

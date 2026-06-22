@@ -8,42 +8,45 @@
 import SwiftUI
 
 struct HomeView: View {
-
+    
     @StateObject private var vm = HomeViewModel()
-
+    @EnvironmentObject var router: Router
+    
     var body: some View {
-
+        
         ZStack {
-
+            
             Image(.loginBg)
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-
+            
             VStack(spacing: 0) {
-
+                
                 HomeHeaderView(
                     userName: vm.userName
                 )
                 .padding(.horizontal, 20)
                 .padding(.top, 50)
                 .padding(.bottom, 15)
-
+                
                 ScrollView(
                     showsIndicators: false
                 ) {
-
+                    
                     LazyVStack(
                         spacing: 16
                     ) {
-
+                        
                         ForEach(vm.properties) { property in
-
+                            
                             PropertyCardView(
                                 property: property
                             ) {
-
-                                print("Edit tapped")
+                                
+                                router.push(
+                                    .propertyInquiry(property)
+                                )
                             }
                         }
                     }
