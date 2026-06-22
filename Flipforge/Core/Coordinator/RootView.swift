@@ -8,27 +8,35 @@
 import SwiftUI
 
 struct RootView: View {
-
+    
     @EnvironmentObject var coordinator: AppCoordinator
-
+    
     var body: some View {
-
+        
         switch coordinator.flow {
-
+            
         case .splash:
             ContentView()
-
+            
         case .login:
             LoginView()
-
+            
         case .home:
             ContentView()
-
+            
         case .onboarding:
             ContentView()
             
         case .register:
             RegisterView()
+            
+        case .forgotPassword:
+            ForgotPasswordView()
+            
+        case .mainTab:
+            MainTabView()
+            
+            
         }
     }
 }

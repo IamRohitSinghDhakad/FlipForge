@@ -23,7 +23,7 @@ struct ContentView: View {
             Image(.logo)
                 .resizable()
                 .scaledToFit()
-                .frame(maxWidth: 200, maxHeight: 200)
+                .frame(maxWidth: 300, maxHeight: 300)
         }
         
         .task {

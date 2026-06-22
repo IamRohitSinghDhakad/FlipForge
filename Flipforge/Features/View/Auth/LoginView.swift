@@ -101,7 +101,7 @@ extension LoginView {
             HStack {
                 
                 Button {
-                    
+                    coordinator.showForgotPassword()
                 } label: {
                     
                     Text("Forgot Password?")
@@ -113,7 +113,7 @@ extension LoginView {
             }
             
             CustomButton(title: "LOGIN") {
-                
+                coordinator.showMainTab()
             }
             
             HStack(spacing: 5) {
