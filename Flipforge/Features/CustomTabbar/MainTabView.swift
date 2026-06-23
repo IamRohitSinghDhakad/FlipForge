@@ -8,23 +8,24 @@
 import SwiftUI
 import Combine
 import Foundation
-
 import SwiftUI
 
+
+
 struct MainTabView: View {
-
+    
     @EnvironmentObject var router: Router
-
+    
     @State private var selectedTab: AppTab = .home
-
+    
     var body: some View {
-
+        
         NavigationStack(path: $router.path) {
-
+            
             ZStack(alignment: .bottom) {
-
+                
                 tabContent
-
+                
                 CustomTabBar(
                     selectedTab: $selectedTab
                 )
@@ -32,30 +33,49 @@ struct MainTabView: View {
                 .padding(.bottom, 10)
             }
             .ignoresSafeArea(.keyboard)
-
+            
             .navigationDestination(
                 for: AppRoute.self
             ) { route in
-
+                
                 switch route {
-
-                case .propertyInquiry(let property):
-
+                    
+                case .propertyInquiry(let mode):
+                    
                     PropertyInquiryView(
-                        property: property
+                        mode: mode
                     )
-
-                case .propertyResult:
-
-                    Text("Property Result")
-
+                    
+                case .dealAnalysis(let result):
+                    
+                    PropertyResultView(
+                        result: result
+                    )
                 case .profile:
-
+                    
                     Text("Profile")
-
+                    
                 case .settings:
-
+                    
                     Text("Settings")
+                    
+                case .masterSettings:
+                    
+                    MasterSettingsView()
+                    
+                case .subscription:
+                    
+                    SubscriptionView()
+                    
+                case .webPage(
+                    let title,
+                    let url
+                ):
+                    
+                    WebPageView(
+                        title: title,
+                        urlString: url
+                    )
                 }
             }
         }
@@ -63,24 +83,26 @@ struct MainTabView: View {
 }
 
 extension MainTabView {
-
+    
     @ViewBuilder
     private var tabContent: some View {
-
+        
         switch selectedTab {
-
+            
         case .home:
-
+            
             HomeView()
-
+            
         case .addProperty:
-
-            EmptyView()
-
+            
+            PropertyInquiryView(
+                mode: .create
+            )
+            
         case .settings:
-
-            EmptyView()
-
+            
+            SettingsView()
+            
         }
     }
 }

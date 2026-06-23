@@ -13,7 +13,7 @@ struct CustomNavigationBar: View {
 
     let title: String
     let subtitle: String?
-
+    var showBackButton: Bool = true
     var onBack: (() -> Void)?
 
     var body: some View {
@@ -28,16 +28,19 @@ struct CustomNavigationBar: View {
 
                 HStack {
 
-                    Button {
+                    if showBackButton {
 
-                        onBack?()
+                        Button {
 
-                    } label: {
+                            onBack?()
 
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 22, weight: .medium))
-                            .foregroundColor(.white)
-                            .frame(width: 44, height: 44)
+                        } label: {
+
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 22, weight: .medium))
+                                .foregroundColor(.white)
+                                .frame(width: 44, height: 44)
+                        }
                     }
 
                     Spacer()

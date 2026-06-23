@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct PropertyCardView: View {
-
+    
     let property: PropertyModel
     let onEdit: () -> Void
-
+    let onTap: () -> Void
     var body: some View {
-
+        
         HStack(alignment: .center, spacing: 10) {
-
+            
             Image(property.imageName)
                 .resizable()
                 .scaledToFit()
@@ -23,12 +23,12 @@ struct PropertyCardView: View {
                     width: 65,
                     height: 65
                 )
-
+            
             VStack(
                 alignment: .leading,
                 spacing: 4
             ) {
-
+                
                 Text(property.title)
                     .font(
                         .system(
@@ -38,26 +38,26 @@ struct PropertyCardView: View {
                     )
                     .foregroundColor(.white)
                     .lineLimit(1)
-
+                
                 Text(
                     "Total Sq. Feet: \(Int(property.sqft)) sqft"
                 )
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
-                    .lineLimit(1)
+                .lineLimit(1)
             }
-
+            
             Spacer(minLength: 8)
-
+            
             VStack(
                 alignment: .trailing,
                 spacing: 6
             ) {
-
+                
                 Text("Purchase Price")
                     .font(.system(size: 12))
                     .foregroundColor(.gray)
-
+                
                 Text(
                     "$\(property.purchasePrice, specifier: "%.0f")"
                 )
@@ -68,13 +68,13 @@ struct PropertyCardView: View {
                     )
                 )
                 .foregroundColor(.white)
-
+                
                 Button {
-
+                    
                     onEdit()
-
+                    
                 } label: {
-
+                    
                     Text("Edit")
                         .font(
                             .system(
@@ -111,5 +111,9 @@ struct PropertyCardView: View {
                 )
             )
         )
+        
+        .onTapGesture {
+            onTap()
+        }
     }
 }

@@ -7,6 +7,12 @@
 
 import Foundation
 
+
+enum InquiryMode: Hashable {
+    case create
+    case edit(PropertyModel)
+}
+
 struct PropertyModel: Identifiable, Codable, Hashable {
 
     let id = UUID()

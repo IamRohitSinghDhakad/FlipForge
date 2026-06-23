@@ -48,3 +48,31 @@ extension UIApplication {
 }
 
 
+extension View {
+
+    func cardStyle() -> some View {
+
+        self
+            .background(
+                Color(
+                    red: 14/255,
+                    green: 38/255,
+                    blue: 88/255
+                )
+            )
+            .clipShape(
+                RoundedRectangle(
+                    cornerRadius: 22
+                )
+            )
+            .overlay {
+
+                RoundedRectangle(
+                    cornerRadius: 22
+                )
+                .stroke(
+                    Color.white.opacity(0.1)
+                )
+            }
+    }
+}

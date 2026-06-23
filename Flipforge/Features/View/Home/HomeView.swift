@@ -45,7 +45,15 @@ struct HomeView: View {
                             ) {
                                 
                                 router.push(
-                                    .propertyInquiry(property)
+                                    .propertyInquiry(
+                                        .edit(property)
+                                    )
+                                )
+                            } onTap: {
+                                router.push(
+                                    .dealAnalysis(
+                                        PropertyResultModel.mock
+                                    )
                                 )
                             }
                         }

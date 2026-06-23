@@ -11,8 +11,14 @@ import SwiftUI
 
 
 enum AppRoute: Hashable {
-    case propertyInquiry(PropertyModel)
-    case propertyResult
+    case propertyInquiry(InquiryMode)
+    case dealAnalysis(PropertyResultModel)
+    case masterSettings
+    case subscription
+    case webPage(
+           title: String,
+           url: String
+       )
     case profile
     case settings
 }
