@@ -21,14 +21,14 @@ struct HomeHeaderView: View {
             Text("Welcome, \(userName)!")
                 .font(
                     .system(
-                        size: 30,
+                        size: 26,
                         weight: .bold
                     )
                 )
                 .foregroundColor(.white)
 
             Text("Here's your property overview")
-                .font(.title2)
+                .font(.title3)
                 .foregroundColor(.gray)
         }
         .frame(

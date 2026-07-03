@@ -8,32 +8,36 @@ import SwiftUI
 import Foundation
 
 struct ProfileCardView: View {
-
+    
+    let profile: ProfileUser?
+    
     var body: some View {
-
+        
         HStack(spacing: 16) {
-
-            Image("profile")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 80, height: 80)
-                .clipShape(Circle())
-
+            
+            RemoteImage(
+                url: profile?.userImage,
+                placeholder: "profile",
+                width: 80,
+                height: 80,
+                isCircle: true
+            )
+            
             VStack(
                 alignment: .leading,
                 spacing: 4
             ) {
-
-                Text("Arun Goswami")
+                
+                Text(profile?.name ?? "")
                     .font(.title2)
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
-
-                Text("goswamipuriarun@gmail.com")
+                
+                Text(profile?.email ?? "")
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }
-
+            
             Spacer()
         }
         .padding()

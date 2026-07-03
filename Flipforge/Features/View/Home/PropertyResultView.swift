@@ -11,19 +11,11 @@ struct PropertyResultView: View {
     
     @StateObject private var vm:
     PropertyResultViewModel
-    
+    @State private var showShareSheet = false
     @EnvironmentObject var router: Router
     
-    init(
-        result: PropertyResultModel
-    ) {
-        
-        _vm = StateObject(
-            wrappedValue:
-                PropertyResultViewModel(
-                    result: result
-                )
-        )
+    init(result: PropertyAnalysisResult) {
+        _vm = StateObject(wrappedValue: PropertyResultViewModel(result: result))
     }
     
     var body: some View {
@@ -60,6 +52,21 @@ struct PropertyResultView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        
+        
+        .onChange(of: vm.pdfURL) {
+            showShareSheet = vm.pdfURL != nil
+        }
+        
+        .sheet(isPresented: $showShareSheet) {
+
+            if let pdf = vm.pdfURL {
+
+                ShareSheet(
+                    activityItems: [pdf]
+                )
+            }
+        }
     }
     
     
@@ -87,15 +94,13 @@ struct PropertyResultView: View {
             Spacer()
             
             Button {
-                
+                Task {await vm.exportPDF()}
             } label: {
-                
                 HStack(spacing: 6) {
-                    
                     Image(systemName: "doc.fill")
-                    
                     Text("Export PDF")
                 }
+                
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(.orange)
                 .padding(.horizontal, 14)
@@ -163,17 +168,17 @@ struct PropertyResultView: View {
     }
     
     private var profitCard: some View {
-
+        
         VStack(
             alignment: .leading,
             spacing: 8
         ) {
-
+            
             Text("Estimated Net Profit")
                 .foregroundColor(.white)
-
+            
             Text(
-                "$\(Int(vm.result.estimatedProfit))"
+                "$\(Int(vm.scenario?.estimatedNetProfit.doubleValue ?? 0))"
             )
             .font(
                 .system(
@@ -239,18 +244,18 @@ struct PropertyResultView: View {
                 
                 ResultMetricCard(
                     title: "Net Return",
-                    value: "\(vm.result.netReturn)%"
+                    value: vm.scenario?.netReturn ?? "-"
                 )
                 
                 ResultMetricCard(
                     title: "Cash Net Return",
-                    value: "\(vm.result.cashNetReturn)%"
+                    value: vm.scenario?.cashNetReturn ?? "-"
                 )
             }
             
             ResultMetricCard(
                 title: "Annual APY",
-                value: "\(vm.result.annualAPY)%"
+                value: vm.scenario?.apy ?? "-"
             )
             
             LazyVGrid(
@@ -264,17 +269,17 @@ struct PropertyResultView: View {
                 
                 ResultMetricCard(
                     title: "After Repair Value",
-                    value: "$\(Int(vm.result.arv))"
+                    value: "$\(Int(vm.scenario?.arv.doubleValue ?? 0))"
                 )
                 
                 ResultMetricCard(
                     title: "Loan Amount",
-                    value: "$\(Int(vm.result.loanAmount))"
+                    value: "$\(Int(vm.scenario?.loanAmount.doubleValue ?? 0))"
                 )
                 
                 ResultMetricCard(
                     title: "Cash Required",
-                    value: "$\(Int(vm.result.cashRequired))"
+                    value: "$\(Int(vm.scenario?.totalCashRequired.doubleValue ?? 0))"
                 )
             }
         }
@@ -286,28 +291,22 @@ struct PropertyResultView: View {
             
             CostBreakdownSection(
                 title: "BUYING COSTS",
-                total: vm.result.buyingCosts.reduce(
-                    0
-                ) { $0 + $1.amount },
-                items: vm.result.buyingCosts,
+                total: vm.scenario?.totalBuyingCosts ?? "0",
+                items: vm.buyingCosts,
                 isExpanded: $vm.buyingExpanded
             )
             
             CostBreakdownSection(
                 title: "HOLDING COSTS",
-                total: vm.result.holdingCosts.reduce(
-                    0
-                ) { $0 + $1.amount },
-                items: vm.result.holdingCosts,
+                total: vm.scenario?.totalHoldingCosts ?? "0",
+                items: vm.holdingCosts,
                 isExpanded: $vm.holdingExpanded
             )
             
             CostBreakdownSection(
                 title: "SELLING COSTS",
-                total: vm.result.sellingCosts.reduce(
-                    0
-                ) { $0 + $1.amount },
-                items: vm.result.sellingCosts,
+                total: vm.scenario?.totalSellingCosts ?? "0",
+                items: vm.sellingCosts,
                 isExpanded: $vm.sellingExpanded
             )
         }
@@ -316,18 +315,7 @@ struct PropertyResultView: View {
     
     private var totalCostCard: some View {
         
-        let totalCost =
-        vm.result.buyingCosts.reduce(
-            0
-        ) { $0 + $1.amount }
-        +
-        vm.result.holdingCosts.reduce(
-            0
-        ) { $0 + $1.amount }
-        +
-        vm.result.sellingCosts.reduce(
-            0
-        ) { $0 + $1.amount }
+        let totalCost = vm.scenario?.totalCosts.doubleValue ?? 0
         
         return HStack {
             
@@ -364,36 +352,36 @@ struct PropertyResultView: View {
                 )
             )
         )
-//        .overlay(
-//            RoundedRectangle(
-//                cornerRadius: 24
-//            )
-//            .stroke(
-//                Color.green,
-//                lineWidth: 3
-//            )
-//        )
+        //        .overlay(
+        //            RoundedRectangle(
+        //                cornerRadius: 24
+        //            )
+        //            .stroke(
+        //                Color.green,
+        //                lineWidth: 3
+        //            )
+        //        )
     }
     
 }
 
 
 struct ResultMetricCard: View {
-
+    
     let title: String
     let value: String
-
+    
     var body: some View {
-
+        
         VStack(
             alignment: .leading,
             spacing: 8
         ) {
-
+            
             Text(title)
                 .font(.system(size: 14))
                 .foregroundColor(.white)
-
+            
             Text(value)
                 .font(
                     .system(

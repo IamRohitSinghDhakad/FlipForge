@@ -49,18 +49,76 @@ struct HomeView: View {
                                         .edit(property)
                                     )
                                 )
-                            } onTap: {
-                                router.push(
-                                    .dealAnalysis(
-                                        PropertyResultModel.mock
-                                    )
-                                )
+                            }
+                            onDelete: {
+
+                                vm.propertyToDelete = property
+
+                            }
+                            onTap: {
+//                                router.push(
+//                                    .dealAnalysis(
+//                                        PropertyResultModel.mock
+//                                    )
+//                                )
                             }
                         }
                     }
                     .padding(.horizontal, 12)
                     .padding(.bottom, 120)
                 }
+            }
+        }
+        
+        .alert(
+            "Delete Property",
+            isPresented: Binding(
+                get: { vm.propertyToDelete != nil },
+                set: { if !$0 { vm.propertyToDelete = nil } }
+            )
+        ) {
+
+            Button("Cancel", role: .cancel) {
+                vm.propertyToDelete = nil
+            }
+
+            Button("Delete", role: .destructive) {
+
+                guard let property = vm.propertyToDelete else {
+                    return
+                }
+
+                Task {
+                   // await vm.deleteProperty(property)
+                }
+
+            }
+
+        } message: {
+
+            Text("Are you sure you want to delete this property?")
+        }
+        
+        .alert(
+            "Membership Required",
+            isPresented: $vm.showMembershipAlert
+        ) {
+
+            Button("Take Membership") {
+
+                router.push(.subscription)
+            }
+
+            Button("Cancel", role: .cancel) { }
+
+        } message: {
+
+            Text("Please take a membership first to continue.")
+        }
+        
+        .onAppear {
+            Task {
+                await vm.loadData()
             }
         }
     }

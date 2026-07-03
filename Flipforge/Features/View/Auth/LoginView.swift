@@ -10,8 +10,8 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @State private var email = ""
-    @State private var password = ""
+    @StateObject private var viewModel = LoginViewModel()
+    
     @State private var isSecure = true
     @FocusState private var focusedField: Field?
     @EnvironmentObject var coordinator: AppCoordinator
@@ -47,6 +47,31 @@ struct LoginView: View {
             }
         }
         .hideKeyboardOnTap()
+        
+        .onChange(of: viewModel.isLoginSuccessful) { _, success in
+
+            if success {
+                coordinator.showMainTab()
+            }
+        }
+        
+        .alert(
+            "Error",
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { _ in viewModel.errorMessage = nil }
+            )
+        ) {
+            Button("OK") { }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
+        
+        .onAppear{
+            viewModel.email = "goswamipuriarun@gmail.com"
+            viewModel.password = "Arun@12345"
+        }
+        
     }
 }
 
@@ -77,7 +102,7 @@ extension LoginView {
                 CustomTextField(
                     placeholder: "Email",
                     icon: "envelope.fill",
-                    text: $email
+                    text: $viewModel.email
                 )
                 .focused($focusedField, equals: .email)
                 .submitLabel(.next)
@@ -87,7 +112,7 @@ extension LoginView {
                 
                 CustomSecureField(
                     placeholder: "Password",
-                    text: $password
+                    text: $viewModel.password
                 )
                 .focused($focusedField, equals: .password)
                 .submitLabel(.done)
@@ -113,7 +138,9 @@ extension LoginView {
             }
             
             CustomButton(title: "LOGIN") {
-                coordinator.showMainTab()
+                Task {
+                       await viewModel.login()
+                   }
             }
             
             HStack(spacing: 5) {
@@ -139,6 +166,7 @@ extension LoginView {
                             blue: 108/255))
         )
         .padding(.horizontal, 20)
+        
     }
 }
 

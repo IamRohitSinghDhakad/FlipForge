@@ -10,9 +10,24 @@ import Combine
 
 struct PropertyInquiryView: View {
     
-    @StateObject private var vm = PropertyInquiryViewModel()
+    @StateObject private var vm: PropertyInquiryViewModel
+    
     let mode: InquiryMode
     @EnvironmentObject var router: Router
+    
+    init(
+        mode: InquiryMode,
+        showBackButton: Bool = true
+    ) {
+        
+        self.mode = mode
+        
+        _vm = StateObject(
+            wrappedValue: PropertyInquiryViewModel(
+                mode: mode
+            )
+        )
+    }
     
     var body: some View {
         
@@ -61,12 +76,9 @@ struct PropertyInquiryView: View {
         
             .onAppear {
                 
-                if case let .edit(property) = mode {
-                    
-                    vm.propertyAddress = property.title
-                    vm.totalSqFeet = "\(Int(property.sqft))"
-                    vm.purchasePrice = "\(property.purchasePrice)"
-                }
+                //                if case let .edit(property) = mode {
+                //                    vm.configure(with: property)
+                //                }
             }
     }
     
@@ -114,7 +126,7 @@ struct PropertyInquiryView: View {
                 
                 InquiryDateField(
                     title: "Date of Estimate",
-                    date: $vm.estimateDate
+                    date: $vm.dateOfEstimate
                 )
             }
         }
@@ -247,26 +259,41 @@ struct PropertyInquiryView: View {
         
         HStack(spacing: 16) {
             
-            CustomButton(
-                title: "SAVE"
-            ) {
-                
-                vm.save()
+            CustomButton(title: "SAVE") {
+                Task {
+                    do {
+                        let response = try await vm.save()
+                        router.push(
+                            .dealAnalysis(response.result)
+                        )
+                    } catch {
+                        vm.showApiError(error)
+                    }
+                }
             }
             
             CustomButton(title: "SEE RESULT") {
-                vm.calculate()
+                Task {
+                    do {
+                        let response = try await vm.analyse()
+                        router.push(
+                            .dealAnalysis(response.result)
+                        )
+                    } catch {
+                        vm.showApiError(error)
+                    }
+                }
             }
         }
     }
     
     private var showBackButton: Bool {
-
+        
         switch mode {
-
+            
         case .create:
             return false
-
+            
         case .edit:
             return true
         }

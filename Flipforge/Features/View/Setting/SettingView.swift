@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
 
+    @StateObject private var vm = SettingsViewModel()
     @EnvironmentObject var coordinator: AppCoordinator
     @EnvironmentObject var router: Router
 
@@ -30,7 +31,9 @@ struct SettingsView: View {
                         .foregroundColor(.white)
                         .padding(.top, 60)
 
-                    ProfileCardView()
+                    ProfileCardView(
+                        profile: vm.profile
+                    )
 
                     SettingsRow(
                         icon: "gearshape.fill",
@@ -87,6 +90,13 @@ struct SettingsView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 120)
             }
+        }
+        
+        .onAppear{
+            Task{
+                await vm.loadProfile()
+            }
+            
         }
     }
 }

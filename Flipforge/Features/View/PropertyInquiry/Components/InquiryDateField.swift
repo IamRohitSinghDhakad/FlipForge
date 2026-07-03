@@ -11,16 +11,14 @@ struct InquiryDateField: View {
 
     let title: String
 
-    @Binding var date: Date
+    @Binding var date: String
 
+    @State private var selectedDate = Date()
     @State private var showDatePicker = false
 
     var body: some View {
 
-        VStack(
-            alignment: .leading,
-            spacing: 8
-        ) {
+        VStack(alignment: .leading, spacing: 8) {
 
             Text(title)
                 .font(.system(size: 14))
@@ -28,54 +26,53 @@ struct InquiryDateField: View {
 
             Button {
 
+                // If a date already exists, parse it
+                if let parsedDate = Self.dateFormatter.date(from: date) {
+                    selectedDate = parsedDate
+                }
+
                 showDatePicker = true
 
             } label: {
 
                 HStack {
 
-                    Text(
-                        date.formatted(
-                            date: .numeric,
-                            time: .omitted
-                        )
-                    )
+                    Text(date.isEmpty ? "Select Date" : date)
+                        .foregroundColor(date.isEmpty ? .gray : .white)
 
                     Spacer()
 
                     Image(systemName: "calendar")
+                        .foregroundColor(.gray)
                 }
-                .foregroundColor(.gray)
                 .padding()
                 .frame(height: 58)
                 .background(
-                    RoundedRectangle(
-                        cornerRadius: 18
-                    )
-                    .fill(
-                        Color(
-                            red: 17/255,
-                            green: 49/255,
-                            blue: 109/255
+                    RoundedRectangle(cornerRadius: 18)
+                        .fill(
+                            Color(
+                                red: 17/255,
+                                green: 49/255,
+                                blue: 109/255
+                            )
                         )
-                    )
                 )
             }
         }
-        .sheet(
-            isPresented: $showDatePicker
-        ) {
+        .sheet(isPresented: $showDatePicker) {
 
             VStack {
 
                 DatePicker(
                     "Select Date",
-                    selection: $date,
+                    selection: $selectedDate,
                     displayedComponents: .date
                 )
                 .datePickerStyle(.graphical)
 
                 Button("Done") {
+
+                    date = Self.dateFormatter.string(from: selectedDate)
                     showDatePicker = false
                 }
                 .padding()
@@ -83,4 +80,11 @@ struct InquiryDateField: View {
             .presentationDetents([.medium])
         }
     }
+
+    private static let dateFormatter: DateFormatter = {
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"   // API format
+        return formatter
+    }()
 }

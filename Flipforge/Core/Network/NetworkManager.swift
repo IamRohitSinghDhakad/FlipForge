@@ -20,22 +20,32 @@ protocol Endpoint {
 }
 
 extension Endpoint {
+
     func urlRequest() throws -> URLRequest {
-        // build URLRequest with URLComponents or HTTPBody
+
         let url = baseURL.appendingPathComponent(path)
-        var request = URLRequest(url: url)
-        request.httpMethod = method.rawValue
-        request.allHTTPHeaderFields = headers
-        // Attach parameters for GET or POST
+        var components = URLComponents(
+            url: url,
+            resolvingAgainstBaseURL: false
+        )
+
         if let params = parameters {
-            if method == .get {
-                var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-                components?.queryItems = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
-                request.url = components?.url
-            } else {
-                request.httpBody = try JSONSerialization.data(withJSONObject: params)
+            components?.queryItems = params.map {
+
+                URLQueryItem(
+                    name: $0.key,
+                    value: "\($0.value)"
+                )
             }
         }
+
+        guard let finalURL = components?.url else {
+            throw URLError(.badURL)
+        }
+
+        var request = URLRequest(url: finalURL)
+        request.httpMethod = method.rawValue
+        request.allHTTPHeaderFields = headers
         return request
     }
 }
@@ -64,21 +74,61 @@ final class NetworkManager: NetworkManaging {
         self.session = session
     }
     func fetch<T: Decodable>(from endpoint: Endpoint) async throws -> T {
+
         let request = try endpoint.urlRequest()
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse else {
-            throw NetworkError.invalidResponse
+        print("\n================== API REQUEST ==================")
+        print("URL       : \(request.url?.absoluteString ?? "")")
+        print("Method    : \(request.httpMethod ?? "")")
+        print("Headers   : \(request.allHTTPHeaderFields ?? [:])")
+        if let parameters = endpoint.parameters {
+            print("Parameters: \(parameters)")
         }
-        switch http.statusCode {
-        case 200...299: break
-        case 400...499: throw NetworkError.clientError(http.statusCode)
-        case 500...599: throw NetworkError.serverError(http.statusCode)
-        default: throw NetworkError.unknownError(http.statusCode)
-        }
+        print("=================================================\n")
         do {
-            return try JSONDecoder().decode(T.self, from: data)
+            let (data, response) = try await session.data(for: request)
+            guard let http = response as? HTTPURLResponse else {
+                print("❌ Invalid HTTP Response")
+                throw NetworkError.invalidResponse
+            }
+            print("\n================== API RESPONSE ==================")
+            print("Status Code: \(http.statusCode)")
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("Raw Response:\n\(responseString)")
+            }
+            print("==================================================\n")
+            switch http.statusCode {
+
+            case 200...299:
+                break
+
+            case 400...499:
+                throw NetworkError.clientError(http.statusCode)
+
+            case 500...599:
+                throw NetworkError.serverError(http.statusCode)
+
+            default:
+                throw NetworkError.unknownError(http.statusCode)
+            }
+
+            do {
+                let decodedResponse = try JSONDecoder().decode(T.self, from: data)
+                print("✅ Successfully decoded \(T.self)\n")
+                return decodedResponse
+
+            } catch {
+                print("❌ Decoding Failed")
+                print(error)
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("Response causing decode failure:\n\(responseString)")
+                }
+                throw NetworkError.decodingFailed
+            }
         } catch {
-            throw NetworkError.decodingFailed
+            print("❌ Network Error")
+            print(error.localizedDescription)
+
+            throw error
         }
     }
 }

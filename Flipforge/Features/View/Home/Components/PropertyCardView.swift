@@ -7,111 +7,99 @@
 
 import SwiftUI
 
+
 struct PropertyCardView: View {
-    
+
     let property: PropertyModel
     let onEdit: () -> Void
+    let onDelete: () -> Void
     let onTap: () -> Void
+
     var body: some View {
-        
-        HStack(alignment: .center, spacing: 10) {
-            
-            Image(property.imageName)
+
+        HStack(alignment: .top, spacing: 2) {
+
+            Image(.property)
                 .resizable()
                 .scaledToFit()
-                .frame(
-                    width: 65,
-                    height: 65
-                )
-            
-            VStack(
-                alignment: .leading,
-                spacing: 4
-            ) {
-                
-                Text(property.title)
-                    .font(
-                        .system(
-                            size: 14,
-                            weight: .semibold
-                        )
-                    )
+                .frame(width: 70, height: 70)
+
+            VStack(alignment: .leading, spacing: 6) {
+
+                Text(property.propertyAddress)
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
-                    .lineLimit(1)
-                
-                Text(
-                    "Total Sq. Feet: \(Int(property.sqft)) sqft"
-                )
-                .font(.system(size: 12))
-                .foregroundColor(.gray)
-                .lineLimit(1)
-            }
-            
-            Spacer(minLength: 8)
-            
-            VStack(
-                alignment: .trailing,
-                spacing: 6
-            ) {
-                
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("Total Sq. Feet: \(property.totalSqFeet) sqft")
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
+
                 Text("Purchase Price")
                     .font(.system(size: 12))
                     .foregroundColor(.gray)
-                
-                Text(
-                    "$\(property.purchasePrice, specifier: "%.0f")"
-                )
-                .font(
-                    .system(
-                        size: 14,
-                        weight: .bold
-                    )
-                )
-                .foregroundColor(.white)
-                
+
+                Text("$\(property.purchasePrice)")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.white)
+
+                Spacer(minLength: 0)
+            }
+
+            Spacer()
+
+            VStack(spacing: 10) {
+
                 Button {
-                    
                     onEdit()
-                    
                 } label: {
-                    
+
                     Text("Edit")
-                        .font(
-                            .system(
-                                size: 14,
-                                weight: .medium
-                            )
-                        )
+                        .font(.system(size: 15, weight: .medium))
                         .foregroundColor(.white)
-                        .frame(
-                            width: 80,
-                            height: 34
+                        .frame(width: 85, height: 36)
+                        .background(
+                            Capsule()
+                                .fill(Color.white.opacity(0.08))
                         )
                         .overlay(
                             Capsule()
-                                .stroke(
-                                    Color.white.opacity(0.3),
-                                    lineWidth: 1
-                                )
+                                .stroke(Color.white.opacity(0.35), lineWidth: 1)
                         )
                 }
-            }
+
+                Button {
+                    onDelete()
+                } label: {
+
+                    Text("Delete")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(.white)
+                        .frame(width: 85, height: 36)
+                        .background(
+                            Capsule()
+                                .fill(Color.red.opacity(0.15))
+                        )
+                        .overlay(
+                            Capsule()
+                                .stroke(Color.red.opacity(0.6), lineWidth: 1)
+                        )
+                }
+
+                Spacer()
+            }.buttonStyle(.plain)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
+        .padding(16)
         .background(
-            RoundedRectangle(
-                cornerRadius: 18
-            )
-            .fill(
-                Color(
-                    red: 17/255,
-                    green: 49/255,
-                    blue: 109/255
+            RoundedRectangle(cornerRadius: 20)
+                .fill(
+                    Color(
+                        red: 17/255,
+                        green: 49/255,
+                        blue: 109/255
+                    )
                 )
-            )
         )
-        
         .onTapGesture {
             onTap()
         }
