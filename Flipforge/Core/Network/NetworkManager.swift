@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import Combine
-
+import UIKit
 
 protocol Endpoint {
     var baseURL: URL { get }
@@ -133,6 +133,104 @@ final class NetworkManager: NetworkManaging {
     }
 }
 
+
+
+extension NetworkManager {
+
+    func uploadMultipart<T: Decodable>(
+        from endpoint: Endpoint,
+        image: UIImage?,
+        imageName: String = "user_image"
+    ) async throws -> T {
+
+        let boundary = UUID().uuidString
+
+        var request = try endpoint.urlRequest()
+
+        request.setValue(
+            "multipart/form-data; boundary=\(boundary)",
+            forHTTPHeaderField: "Content-Type"
+        )
+
+        var body = Data()
+
+        if let image {
+
+            let imageData = image.jpegData(compressionQuality: 0.8)!
+
+            body.append("--\(boundary)\r\n")
+            body.append(
+                "Content-Disposition: form-data; name=\"\(imageName)\"; filename=\"profile.jpg\"\r\n"
+            )
+            body.append("Content-Type: image/jpeg\r\n\r\n")
+            body.append(imageData)
+            body.append("\r\n")
+        }
+
+        body.append("--\(boundary)--\r\n")
+
+        request.httpBody = body
+
+        print("\n=========== MULTIPART REQUEST ===========")
+        print(request.url?.absoluteString ?? "")
+        print("=========================================\n")
+
+        let (data, response) = try await session.data(for: request)
+
+        guard let http = response as? HTTPURLResponse else {
+            throw NetworkError.invalidResponse
+        }
+
+        print("Status : \(http.statusCode)")
+
+        if let string = String(data: data, encoding: .utf8) {
+            print(string)
+        }
+
+        switch http.statusCode {
+
+        case 200...299:
+            break
+
+        case 400...499:
+            throw NetworkError.clientError(http.statusCode)
+
+        case 500...599:
+            throw NetworkError.serverError(http.statusCode)
+
+        default:
+            throw NetworkError.unknownError(http.statusCode)
+        }
+
+        do {
+
+            return try JSONDecoder().decode(T.self, from: data)
+
+        } catch {
+
+            throw NetworkError.decodingFailed
+        }
+    }
+}
+
 protocol NetworkManaging {
-    func fetch<T: Decodable>(from endpoint: Endpoint) async throws -> T
+
+    func fetch<T: Decodable>(
+        from endpoint: Endpoint
+    ) async throws -> T
+
+    func uploadMultipart<T: Decodable>(
+        from endpoint: Endpoint,
+        image: UIImage?,
+        imageName: String
+    ) async throws -> T
+}
+
+
+extension Data {
+
+    mutating func append(_ string: String) {
+
+        append(string.data(using: .utf8)!)
+    }
 }

@@ -5,6 +5,11 @@
 //  Created by Rohit Singh Dhakad on 03/07/26.
 //
 
+struct BaseResponse: Codable {
+
+    let message: String
+    let status: Int
+}
 
 struct MasterSettingsRequest {
 
@@ -58,3 +63,5 @@ extension MasterSettingsRequest {
         ]
     }
 }
+
+

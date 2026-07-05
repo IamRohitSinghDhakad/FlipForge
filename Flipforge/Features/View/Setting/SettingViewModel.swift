@@ -22,15 +22,15 @@ final class SettingsViewModel: BaseViewModel {
 
     func loadProfile() async {
 
-        guard let userId = UserSession.userId else {
-            showError(message: "User not found.")
+        guard !UserSession.userId.isEmpty else {
+            showError("User not found.")
             return
         }
 
-        isLoading = true
-        defer {
-            isLoading = false
-        }
+        let userId = UserSession.userId
+
+        LoadingManager.shared.show()
+        defer { LoadingManager.shared.hide() }
 
         do {
 
@@ -39,7 +39,7 @@ final class SettingsViewModel: BaseViewModel {
             )
 
             guard response.status == 1 else {
-                showError(message: response.message)
+                showError(response.message)
                 return
             }
 

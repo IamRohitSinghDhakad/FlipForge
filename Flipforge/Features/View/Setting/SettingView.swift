@@ -12,6 +12,7 @@ struct SettingsView: View {
     @StateObject private var vm = SettingsViewModel()
     @EnvironmentObject var coordinator: AppCoordinator
     @EnvironmentObject var router: Router
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
 
@@ -60,15 +61,23 @@ struct SettingsView: View {
                         router.push(
                             .webPage(
                                 title: "Privacy Policy",
-                                url: "https://yourwebsite.com/privacy-policy"
+                                url: APIConstants.privacyPolicyURL
                             )
                         )
                     }
 
                     SettingsRow(
-                        icon: "phone.fill",
+                        icon: "envelope.fill",
                         title: "Contact With Email"
                     ) {
+
+                        guard let url = URL(
+                            string: "mailto:flipforgehelp@gmail.com?subject=FlipForge%20Support&body=Hi%20FlipForge%20Team,"
+                        ) else {
+                            return
+                        }
+
+                        openURL(url)
 
                     }
 
@@ -84,6 +93,7 @@ struct SettingsView: View {
                         title: "Logout"
                     ) {
 
+                        UserSession.logout()
                         coordinator.showLogin()
                     }
                 }

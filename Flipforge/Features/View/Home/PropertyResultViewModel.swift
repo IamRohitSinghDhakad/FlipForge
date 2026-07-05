@@ -96,6 +96,8 @@ extension PropertyResultViewModel{
         defer {
             isDownloadingPDF = false
         }
+        
+        
 
         do {
 

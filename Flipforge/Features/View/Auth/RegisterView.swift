@@ -51,10 +51,12 @@ struct RegisterView: View {
 
                         PasswordRulesView()
 
-                        CustomButton(
-                            title: "REGISTER"
-                        ) {
-                            vm.register()
+                        CustomButton(title: "REGISTER") {
+                            Task {
+                                await vm.register(
+                                    coordinator: coordinator
+                                )
+                            }
                         }
 
                         loginSection

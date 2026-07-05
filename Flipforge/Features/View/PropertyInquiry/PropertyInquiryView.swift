@@ -260,26 +260,40 @@ struct PropertyInquiryView: View {
         HStack(spacing: 16) {
             
             CustomButton(title: "SAVE") {
+
+                guard vm.validate() else {
+                    return
+                }
+
                 Task {
+                    LoadingManager.shared.show()
+                    defer { LoadingManager.shared.hide() }
+                    
                     do {
                         let response = try await vm.save()
-                        router.push(
-                            .dealAnalysis(response.result)
-                        )
+                        router.push(.dealAnalysis(response.result))
                     } catch {
+                        LoadingManager.shared.hide()
                         vm.showApiError(error)
                     }
                 }
             }
             
             CustomButton(title: "SEE RESULT") {
+
+                guard vm.validate() else {
+                    return
+                }
+
                 Task {
+                    LoadingManager.shared.show()
+                    defer { LoadingManager.shared.hide() }
+                    
                     do {
                         let response = try await vm.analyse()
-                        router.push(
-                            .dealAnalysis(response.result)
-                        )
+                        router.push(.dealAnalysis(response.result))
                     } catch {
+                        LoadingManager.shared.hide()
                         vm.showApiError(error)
                     }
                 }

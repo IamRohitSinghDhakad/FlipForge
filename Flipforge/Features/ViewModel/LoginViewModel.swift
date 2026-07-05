@@ -48,12 +48,9 @@ final class LoginViewModel: ObservableObject {
             return
         }
         
-        isLoading = true
         errorMessage = nil
-        
-        defer {
-            isLoading = false
-        }
+        LoadingManager.shared.show()
+            defer { LoadingManager.shared.hide() }
         
         do {
             let response = try await repository.login(
@@ -64,7 +61,15 @@ final class LoginViewModel: ObservableObject {
             if response.status == 1 {
                 loginResponse = response
                 if let userId = response.result?.userId {
-                    UserSession.userId = userId
+                    UserSession.saveSession(
+                        userId: response.result?.userId ?? "",
+                        userName: response.result?.name ?? "",
+                        email: response.result?.email ?? "",
+                        mobile: response.result?.mobile ?? "",
+                        dateOfBirth: response.result?.dob ?? "",
+                        profileImage: response.result?.userImage ?? "",
+                        paymentStatus: response.result?.status ?? ""
+                    )
                 }
                 isLoginSuccessful = true
             } else {

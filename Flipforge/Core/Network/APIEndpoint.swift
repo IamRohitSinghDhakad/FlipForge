@@ -12,6 +12,9 @@ enum APIConstants {
 
     /// Change this to your production URL
     static let baseURL = "https://ambitious.in.net/Arun/flipforge/api/"
+    
+    static let privacyPolicyURL =
+            "https://ambitious.in.net/Arun/flipforge/api/page?page=Privacy%20Policy"
 }
 
 
@@ -31,8 +34,7 @@ enum APIEndpoint: Endpoint {
         name: String,
         email: String,
         password: String,
-        deviceType: String,
-        imageData: Data?
+        deviceType: String
     )
 
     case saveMasterSettings(
@@ -192,6 +194,15 @@ extension APIEndpoint {
                 "password": password,
                 "device_type": deviceType
 
+            ]
+            
+        case let .signup(name, email, password, deviceType):
+
+            return [
+                "name": name,
+                "email": email,
+                "password": password,
+                "device_type": deviceType
             ]
 
         case let .forgotPassword(email):

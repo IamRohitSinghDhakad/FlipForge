@@ -28,14 +28,15 @@ final class HomeViewModel: BaseViewModel {
     
     func loadData() async {
 
-        guard let userId = UserSession.userId else {
+        guard !UserSession.userId.isEmpty else {
+            showError("User not found.")
             return
         }
 
-        isLoading = true
-        defer {
-            isLoading = false
-        }
+        let userId = UserSession.userId
+
+        LoadingManager.shared.show()
+        defer { LoadingManager.shared.hide() }
 
         do {
             let profile = try await repository.getProfile(
@@ -66,5 +67,48 @@ final class HomeViewModel: BaseViewModel {
     }
     
     
+    
+    func deleteProperty(_ property: PropertyModel) async {
+
+        guard !UserSession.userId.isEmpty else {
+            showError("User not found.")
+            return
+        }
+
+        let userId = UserSession.userId
+
+        LoadingManager.shared.show()
+        defer { LoadingManager.shared.hide() }
+        
+        
+        do {
+
+            let response = try await repository.deleteProperty(
+                request: DeletePropertyRequest(
+                    propertyId: property.propertyId,
+                    userId: userId
+                )
+            )
+
+            guard response.status == 1 else {
+                showError(response.message)
+                return
+            }
+
+            showSuccess(title: "Success", message: response.message)
+
+            let propertyResponse = try await repository.getProperties(
+                userId: userId
+            )
+
+            if propertyResponse.status == 1 {
+                properties = propertyResponse.result
+            }
+
+        } catch {
+
+            showApiError(error)
+        }
+    }
     
 }

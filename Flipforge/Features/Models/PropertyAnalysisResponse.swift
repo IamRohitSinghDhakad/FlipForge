@@ -12,6 +12,14 @@ struct PropertyAnalysisResponse: Codable {
     let status: Int
 }
 
+
+struct MasterSettingsResponse: Codable {
+
+    let result: AnalysisSettings
+    let message: String
+    let status: Int
+}
+
 struct PropertyAnalysisResult: Codable, Hashable {
 
     @FlexibleString var propertyId: String

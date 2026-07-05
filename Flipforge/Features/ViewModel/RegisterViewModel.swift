@@ -18,83 +18,102 @@ final class RegisterViewModel: BaseViewModel {
     @Published var confirmPassword = ""
 
     @Published var profileImage: UIImage?
+    
+    private let repository: AuthRepositoryProtocol
+
+    init(repository: AuthRepositoryProtocol = AuthRepository()) {
+        self.repository = repository
+        super.init()
+    }
+    
+    
+    func register(
+        coordinator: AppCoordinator
+    ) async {
+
+        guard validate() else { return }
+
+        LoadingManager.shared.show()
+        defer { LoadingManager.shared.hide() }
+
+        do {
+
+            let response = try await repository.signup(
+                name: fullName.trimmingCharacters(in: .whitespacesAndNewlines),
+                email: email.trimmingCharacters(in: .whitespacesAndNewlines),
+                password: password,
+                image: profileImage
+            )
+
+            guard response.status == 1 else {
+                showError(response.message)
+                return
+            }
+            
+            UserSession.saveSession(
+                userId: response.result.userId,
+                userName: response.result.name,
+                email: response.result.email,
+                profileImage: response.result.userImage,
+                paymentStatus: response.result.status
+            )
+
+
+            coordinator.showMainTab()
+
+        } catch {
+            showApiError(error)
+        }
+    }
 
     
-    func register() {
+    private func validate() -> Bool {
 
-        let trimmedName = fullName.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        )
-
-        let trimmedEmail = email.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        )
+        let trimmedName = fullName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !trimmedName.isEmpty else {
-
-            showError(
-                message: "Please enter your full name."
-            )
-            return
+            showError("Please enter your full name.")
+            return false
         }
 
         guard !trimmedEmail.isEmpty else {
-
-            showError(
-                message: "Please enter your email address."
-            )
-            return
+            showError("Please enter your email address.")
+            return false
         }
 
-        guard ValidationManager.isValidEmail(
-            trimmedEmail
-        ) else {
-
-            showError(
-                message: "Please enter a valid email address."
-            )
-            return
+        guard ValidationManager.isValidEmail(trimmedEmail) else {
+            showError("Please enter a valid email address.")
+            return false
         }
 
         guard !password.isEmpty else {
-
-            showError(
-                message: "Please enter a password."
-            )
-            return
+            showError("Please enter a password.")
+            return false
         }
 
-        guard ValidationManager.isValidPassword(
-            password
-        ) else {
-
-            showError(
-                message: """
-                Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character.
-                """
-            )
-            return
+        guard ValidationManager.isValidPassword(password) else {
+            showError("""
+            Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character.
+            """)
+            return false
         }
 
         guard !confirmPassword.isEmpty else {
-
-            showError(
-                message: "Please confirm your password."
-            )
-            return
+            showError("Please confirm your password.")
+            return false
         }
 
         guard password == confirmPassword else {
-
-            showError(
-                message: "Passwords do not match."
-            )
-            return
+            showError("Passwords do not match.")
+            return false
         }
 
-        showSuccess(
-            title: "Success",
-            message: "Account created successfully."
-        )
+        guard profileImage != nil else {
+            showError("Please select a profile picture.")
+            return false
+        }
+
+        return true
     }
 }

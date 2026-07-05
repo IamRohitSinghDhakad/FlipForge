@@ -89,7 +89,7 @@ struct HomeView: View {
                 }
 
                 Task {
-                   // await vm.deleteProperty(property)
+                    await vm.deleteProperty(property)
                 }
 
             }

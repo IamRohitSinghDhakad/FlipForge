@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol AuthRepositoryProtocol {
 
@@ -14,6 +15,13 @@ protocol AuthRepositoryProtocol {
         password: String
     ) async throws -> LoginModel
 
+    func signup(
+        name: String,
+        email: String,
+        password: String,
+        image: UIImage?
+    ) async throws -> SignupResponse
+    
     func getProfile(
         userId: String
     ) async throws -> ProfileResponse
@@ -29,6 +37,22 @@ protocol AuthRepositoryProtocol {
     func exportPDF(
            request: PropertyAnalysisRequest
        ) async throws -> URL
+    
+    func getMasterSettings(
+        userId: String
+    ) async throws -> MasterSettingsResponse
+    
+    func saveMasterSettings(
+        request: MasterSettingsRequest
+    ) async throws -> BaseResponse
+    
+    func deleteProperty(
+        request: DeletePropertyRequest
+    ) async throws -> BaseResponse
+    
+    func forgotPassword(
+        email: String
+    ) async throws -> BaseResponse
 }
 
 
@@ -52,6 +76,28 @@ final class AuthRepository: AuthRepositoryProtocol {
         )
         
         return try await network.fetch(from: endpoint)
+    }
+    
+    
+    func signup(
+        name: String,
+        email: String,
+        password: String,
+        image: UIImage?
+    ) async throws -> SignupResponse {
+
+        let endpoint = APIEndpoint.signup(
+            name: name,
+            email: email,
+            password: password,
+            deviceType: "iOS"
+        )
+
+        return try await network.uploadMultipart(
+            from: endpoint,
+            image: image,
+            imageName: "user_image"
+        )
     }
     
     
@@ -112,4 +158,49 @@ final class AuthRepository: AuthRepositoryProtocol {
 
         return fileURL
     }
+    
+    
+    func getMasterSettings(
+        userId: String
+    ) async throws -> MasterSettingsResponse {
+
+        let endpoint = APIEndpoint.getMasterSettings(
+            userId: userId
+        )
+
+        return try await network.fetch(from: endpoint)
+    }
+    
+    func saveMasterSettings(
+        request: MasterSettingsRequest
+    ) async throws -> BaseResponse {
+
+        let endpoint = APIEndpoint.saveMasterSettings(
+            request: request
+        )
+
+        return try await network.fetch(from: endpoint)
+    }
+    
+    func deleteProperty(
+        request: DeletePropertyRequest
+    ) async throws -> BaseResponse {
+
+        let endpoint = APIEndpoint.deleteProperty(propertyId: request.propertyId)
+
+        return try await network.fetch(from: endpoint)
+    }
+    
+    func forgotPassword(
+        email: String
+    ) async throws -> BaseResponse {
+
+        let endpoint = APIEndpoint.forgotPassword(
+            email: email
+        )
+
+        return try await network.fetch(from: endpoint)
+    }
+    
+    
 }

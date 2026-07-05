@@ -11,15 +11,12 @@ import Combine
 @MainActor
 class BaseViewModel: ObservableObject {
 
-    @Published var isLoading = false
-
     let toastManager = DependencyContainer.shared.toastManager
 
     func showSuccess(
         title: String,
         message: String
     ) {
-
         toastManager.show(
             type: .success,
             title: title,
@@ -28,10 +25,9 @@ class BaseViewModel: ObservableObject {
     }
 
     func showError(
-        title: String = "Error",
-        message: String
+        _ message: String,
+        title: String = "Error"
     ) {
-
         toastManager.show(
             type: .error,
             title: title,
@@ -43,24 +39,14 @@ class BaseViewModel: ObservableObject {
         title: String = "Warning",
         message: String
     ) {
-
         toastManager.show(
             type: .warning,
             title: title,
             message: message
         )
     }
-}
 
-
-extension BaseViewModel {
-
-    func showApiError(
-        _ error: Error
-    ) {
-
-        showError(
-            message: error.localizedDescription
-        )
+    func showApiError(_ error: Error) {
+        showError(error.localizedDescription)
     }
 }

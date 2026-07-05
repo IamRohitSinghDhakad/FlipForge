@@ -10,8 +10,6 @@ import Combine
 
 @MainActor
 final class PropertyInquiryViewModel: BaseViewModel {
-
-    @Published var inquiry = PropertyInquiryModel()
     
     private let repository: AuthRepositoryProtocol
 
@@ -147,7 +145,7 @@ final class PropertyInquiryViewModel: BaseViewModel {
 
             userId: UserSession.userId ?? "",
 
-            propertyId: includePropertyId
+            propertyId: includePropertyId && mode.isEdit
                 ? propertyId
                 : "",
 
@@ -180,9 +178,7 @@ final class PropertyInquiryViewModel: BaseViewModel {
             includePropertyId: true
         )
 
-        return try await repository.propertyAnalysis(
-            request: request
-        )
+        return try await repository.propertyAnalysis(request: request)
     }
     
     func analyse() async throws -> PropertyAnalysisResponse {
@@ -192,9 +188,92 @@ final class PropertyInquiryViewModel: BaseViewModel {
             includePropertyId: false
         )
 
-        return try await repository.propertyAnalysis(
-            request: request
-        )
+        return try await repository.propertyAnalysis(request: request)
+    }
+    
+}
+
+//MARK: Validation
+extension PropertyInquiryViewModel{
+ 
+     func validate() -> Bool {
+
+        if propertyAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            showError("Please enter Property Address")
+            return false
+        }
+
+        if totalSqFeet.isEmpty {
+            showError("Please enter Total Sq. Feet")
+            return false
+        }
+
+        if bedBath.isEmpty {
+            showError("Please enter Bed / Bath")
+            return false
+        }
+
+        if numberOfUnits.isEmpty {
+            showError("Please enter Number of Units")
+            return false
+        }
+
+        if dateOfEstimate.isEmpty {
+            showError("Please select Date of Estimate")
+            return false
+        }
+
+        if arv.isEmpty {
+            showError("Please enter ARV")
+            return false
+        }
+
+        if repairCosts.isEmpty {
+            showError("Please enter Estimated Repair Costs")
+            return false
+        }
+
+        if purchasePrice.isEmpty {
+            showError("Please enter Purchase Price")
+            return false
+        }
+
+        if holdingMonths.isEmpty {
+            showError("Please enter Holding Time")
+            return false
+        }
+
+        if inspectionCost.isEmpty {
+            showError("Please enter Inspection Cost")
+            return false
+        }
+
+        if miscCost.isEmpty {
+            showError("Please enter CFK / Misc Cost")
+            return false
+        }
+
+        if hoaFees.isEmpty {
+            showError("Please enter HOA / Condo Fees")
+            return false
+        }
+
+        if monthlyMiscCost.isEmpty {
+            showError("Please enter Misc Holding Costs")
+            return false
+        }
+
+        if stagingCost.isEmpty {
+            showError("Please enter Staging Costs")
+            return false
+        }
+
+        if photosInspectionCost.isEmpty {
+            showError("Please enter Photos / Inspection Costs")
+            return false
+        }
+
+        return true
     }
     
 }

@@ -12,6 +12,23 @@ enum InquiryMode: Hashable {
     case edit(PropertyModel)
 }
 
+extension InquiryMode {
+
+    var isEdit: Bool {
+        if case .edit = self {
+            return true
+        }
+        return false
+    }
+}
+
+
+struct DeletePropertyRequest {
+
+    let propertyId: String
+    let userId: String
+}
+
 struct PropertyListResponse: Codable {
     let result: [PropertyModel]
     let message: String

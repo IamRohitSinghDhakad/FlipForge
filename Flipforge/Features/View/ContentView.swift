@@ -28,6 +28,19 @@ struct ContentView: View {
         
         .task {
             try? await Task.sleep(for: .seconds(3))
+          
+            await navigateAfterSplash()
+            
+        }
+    }
+    
+    private func navigateAfterSplash() async {
+
+        try? await Task.sleep(for: .seconds(3))
+
+        if UserSession.isAutoLogin && UserSession.isLoggedIn {
+            coordinator.showMainTab()
+        } else {
             coordinator.showLogin()
         }
     }

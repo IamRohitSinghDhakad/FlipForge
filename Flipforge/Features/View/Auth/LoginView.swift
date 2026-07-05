@@ -11,7 +11,6 @@ import SwiftUI
 struct LoginView: View {
     
     @StateObject private var viewModel = LoginViewModel()
-    
     @State private var isSecure = true
     @FocusState private var focusedField: Field?
     @EnvironmentObject var coordinator: AppCoordinator
@@ -48,6 +47,7 @@ struct LoginView: View {
         }
         .hideKeyboardOnTap()
         
+        
         .onChange(of: viewModel.isLoginSuccessful) { _, success in
 
             if success {
@@ -67,10 +67,10 @@ struct LoginView: View {
             Text(viewModel.errorMessage ?? "")
         }
         
-        .onAppear{
-            viewModel.email = "goswamipuriarun@gmail.com"
-            viewModel.password = "Arun@12345"
-        }
+//        .onAppear{
+//            viewModel.email = "goswamipuriarun@gmail.com"
+//            viewModel.password = "Arun@12345"
+//        }
         
     }
 }

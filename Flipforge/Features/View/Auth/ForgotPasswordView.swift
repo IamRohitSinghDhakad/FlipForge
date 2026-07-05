@@ -55,6 +55,13 @@ struct ForgotPasswordView: View {
                 }
             }
         }
+        
+        .onChange(of: vm.resetCompleted) { _, completed in
+
+            if completed {
+                coordinator.showLogin()
+            }
+        }
     }
 }
 
@@ -92,7 +99,9 @@ extension ForgotPasswordView {
                 title: "SUBMIT"
             ) {
                 
-                vm.submit()
+                Task {
+                    await vm.submit()
+                }
             }
         }
         .padding(30)
