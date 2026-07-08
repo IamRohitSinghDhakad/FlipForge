@@ -16,7 +16,7 @@ final class HomeViewModel: BaseViewModel {
     @Published var properties: [PropertyModel] = []
 
     @Published var errorMessage: String?
-
+    @Published var isSubscribed = false
     @Published var showMembershipAlert = false
     @Published var propertyToDelete: PropertyModel?
 
@@ -66,6 +66,27 @@ final class HomeViewModel: BaseViewModel {
         }
     }
     
+    
+    func checkSubscription() async {
+        do {
+
+            let response = try await repository.activeSubscription(
+                userId: UserSession.userId
+            )
+
+            let subscribed =
+            !(response.result?.subscription_id ?? "").isEmpty
+
+            isSubscribed = subscribed
+
+            UserSession.paymentStatus = subscribed ? "1" : "0"
+
+        } catch {
+
+            isSubscribed = false
+            UserSession.paymentStatus = "0"
+        }
+    }
     
     
     func deleteProperty(_ property: PropertyModel) async {

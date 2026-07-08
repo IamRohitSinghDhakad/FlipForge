@@ -53,6 +53,10 @@ protocol AuthRepositoryProtocol {
     func forgotPassword(
         email: String
     ) async throws -> BaseResponse
+    
+    func activeSubscription(
+        userId: String
+    ) async throws -> SubscriptionStatusResponse
 }
 
 
@@ -200,6 +204,19 @@ final class AuthRepository: AuthRepositoryProtocol {
         )
 
         return try await network.fetch(from: endpoint)
+    }
+    
+    func activeSubscription(
+        userId: String
+    ) async throws -> SubscriptionStatusResponse {
+
+        let endpoint = APIEndpoint.activeSubscription(
+            userId: userId
+        )
+
+        return try await network.fetch(
+            from: endpoint
+        )
     }
     
     

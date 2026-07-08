@@ -54,8 +54,7 @@ final class RegisterViewModel: BaseViewModel {
                 userId: response.result.userId,
                 userName: response.result.name,
                 email: response.result.email,
-                profileImage: response.result.userImage,
-                paymentStatus: response.result.status
+                profileImage: response.result.userImage
             )
 
 
@@ -109,10 +108,10 @@ final class RegisterViewModel: BaseViewModel {
             return false
         }
 
-        guard profileImage != nil else {
-            showError("Please select a profile picture.")
-            return false
-        }
+//        guard profileImage != nil else {
+//            showError("Please select a profile picture.")
+//            return false
+//        }
 
         return true
     }

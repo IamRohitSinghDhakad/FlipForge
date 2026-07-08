@@ -19,6 +19,9 @@ enum AppRoute: Hashable {
            title: String,
            url: String
        )
+    case subscriptionCheckout(
+           url: String
+       )
     case profile
     case settings
 }

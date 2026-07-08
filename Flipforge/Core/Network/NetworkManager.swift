@@ -146,17 +146,19 @@ extension NetworkManager {
         let boundary = UUID().uuidString
 
         var request = try endpoint.urlRequest()
-
+        print("request ------>>>1", request)
         request.setValue(
             "multipart/form-data; boundary=\(boundary)",
             forHTTPHeaderField: "Content-Type"
         )
 
+        print("request ------>>>2", request)
+        
         var body = Data()
 
         if let image {
 
-            let imageData = image.jpegData(compressionQuality: 0.8)!
+            let imageData = image.jpegData(compressionQuality: 0.3)!
 
             body.append("--\(boundary)\r\n")
             body.append(
@@ -176,6 +178,10 @@ extension NetworkManager {
         print("=========================================\n")
 
         let (data, response) = try await session.data(for: request)
+        
+        print("\n=========== response ===========")
+        print(data, response)
+        
 
         guard let http = response as? HTTPURLResponse else {
             throw NetworkError.invalidResponse

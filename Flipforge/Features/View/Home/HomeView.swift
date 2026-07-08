@@ -66,7 +66,12 @@ struct HomeView: View {
                     }
                     .padding(.horizontal, 12)
                     .padding(.bottom, 120)
-                }
+                }.emptyState(
+                    when: vm.properties.isEmpty,
+                    icon: "house.circle",
+                    title: "No Properties Found",
+                    message: "Tap the + button to create your first property."
+                )
             }
         }
         
@@ -119,6 +124,7 @@ struct HomeView: View {
         .onAppear {
             Task {
                 await vm.loadData()
+                await vm.checkSubscription()
             }
         }
     }

@@ -8,40 +8,57 @@
 import Foundation
 import Combine
 
-final class SubscriptionViewModel: ObservableObject {
+@MainActor
+final class SubscriptionViewModel: BaseViewModel {
 
-    @Published var selectedPlanIndex = 0
+    private let repository: AuthRepositoryProtocol
 
-    let plans: [SubscriptionPlan] = [
+    @Published var isLoading = false
+    @Published var isSubscribed = false
 
-        SubscriptionPlan(
-            title: "Premium",
-            trialPrice: "$4.99",
-            trialDuration: "For first 2 weeks",
-            regularPrice: "$19.99",
-            billingCycle: "month",
-            features: [
-                "Unlimited Property Inquiries",
-                "Full Deal Analysis & Reports",
-                "Export Results as PDF",
-                "Priority Support"
-            ],
-            isPopular: true
-        ),
+    init(
+        repository: AuthRepositoryProtocol = AuthRepository()
+    ) {
+        self.repository = repository
+    }
 
-        SubscriptionPlan(
-            title: "Pro",
-            trialPrice: "$9.99",
-            trialDuration: "For first 2 weeks",
-            regularPrice: "$29.99",
-            billingCycle: "month",
-            features: [
-                "Everything in Premium",
-                "Unlimited Exports",
-                "Advanced ROI Reports",
-                "Investor Dashboard"
-            ],
-            isPopular: false
-        )
-    ]
+    let plan = SubscriptionPlan(
+        title: "Premium Plan",
+        trialPrice: "$4.99",
+        trialDuration: "For first 2 weeks",
+        regularPrice: "$19.99",
+        billingCycle: "month",
+        features: [
+            "Unlimited Property Inquiries",
+            "Full Deal Analysis & Reports",
+            "Export Results as PDF",
+            "Priority Support"
+        ],
+        isPopular: false
+    )
+
+    func checkSubscription() async {
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+
+            let response = try await repository.activeSubscription(
+                userId: UserSession.userId
+            )
+
+            let subscribed =
+            !(response.result?.subscription_id ?? "").isEmpty
+
+            isSubscribed = subscribed
+
+            UserSession.paymentStatus = subscribed ? "1" : "0"
+
+        } catch {
+
+            isSubscribed = false
+            UserSession.paymentStatus = "0"
+        }
+    }
 }

@@ -15,7 +15,7 @@ import SwiftUI
 struct MainTabView: View {
     
     @EnvironmentObject var router: Router
-    
+    @EnvironmentObject var coordinator: AppCoordinator
     @State private var selectedTab: AppTab = .home
     
     var body: some View {
@@ -76,6 +76,14 @@ struct MainTabView: View {
                         title: title,
                         urlString: url
                     )
+                case .subscriptionCheckout(let url):
+
+                    SubscriptionWebView(
+                        urlString: url
+                    ) {
+                        coordinator.showMainTab()
+                    }
+                    
                 }
             }
         }

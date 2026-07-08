@@ -40,21 +40,45 @@ struct SubscriptionView: View {
 
                         headerSection
 
-                        plansSection
+                        if vm.isLoading {
 
-                        subscribeButton
+                            ProgressView()
+                                .tint(.white)
+                                .padding(.vertical, 20)
 
-                        Text(
-                            "Cancel anytime. No hidden charges."
-                        )
-                        .foregroundColor(.gray)
-                        .padding(.bottom, 40)
+                        } else if vm.isSubscribed {
+
+                            VStack(spacing: 10) {
+
+                                Image(systemName: "checkmark.seal.fill")
+                                    .font(.system(size: 45))
+                                    .foregroundColor(.green)
+
+                                Text("You are already subscribed")
+                                    .font(.headline)
+                                    .foregroundColor(.green)
+                            }
+
+                        } else {
+
+                            plansSection
+                            
+                            subscribeButton
+                        }
+                       
                     }
                     .padding()
                 }
             }
         }
         .navigationBarBackButtonHidden(true)
+        
+        .onAppear{
+            Task{
+                await vm.checkSubscription()
+            }
+            
+        }
     }
 }
 
@@ -69,12 +93,16 @@ private extension SubscriptionView {
                 .font(.system(size: 70))
                 .foregroundColor(.orange)
 
-            Text("Premium Plans")
+            Text("Premium Plan")
                 .font(.system(size: 34, weight: .bold))
                 .foregroundColor(.white)
 
+            
+            
             Text(
-                "Unlock all features and grow your real estate business"
+                vm.isSubscribed
+                ? "Your Premium Plan is Active. Enjoy all premium features and grow your real estate business."
+                : "Unlock all features and grow your real estate business."
             )
             .font(.system(size: 18))
             .foregroundColor(.gray)
@@ -87,26 +115,8 @@ private extension SubscriptionView {
 
     var plansSection: some View {
 
-        TabView(
-            selection: $vm.selectedPlanIndex
-        ) {
-
-            ForEach(
-                Array(vm.plans.enumerated()),
-                id: \.offset
-            ) { index, plan in
-
-                SubscriptionCard(
-                    plan: plan
-                )
-                .padding(.horizontal, 8)
-                .tag(index)
-            }
-        }
-        .frame(height: 520)
-        .tabViewStyle(
-            .page(indexDisplayMode: .automatic)
-        )
+        SubscriptionCard()
+            .padding(.horizontal, 8)
     }
 }
 
@@ -117,13 +127,11 @@ private extension SubscriptionView {
         CustomButton(
             title: "SUBSCRIBE NOW"
         ) {
-
-            let selectedPlan =
-            vm.plans[vm.selectedPlanIndex]
-
-            print(selectedPlan.title)
-            
-            // RevenueCat Purchase
+            router.push(
+                .subscriptionCheckout(
+                    url:  APIConstants.baseURL + "subscribe?user_id=\(UserSession.userId)"
+                )
+            )
         }
     }
 }

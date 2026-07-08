@@ -67,10 +67,10 @@ struct LoginView: View {
             Text(viewModel.errorMessage ?? "")
         }
         
-//        .onAppear{
-//            viewModel.email = "goswamipuriarun@gmail.com"
-//            viewModel.password = "Arun@12345"
-//        }
+        .onAppear{
+            viewModel.email = "goswamipuriarun@gmail.com"
+            viewModel.password = "Arun@12345"
+        }
         
     }
 }

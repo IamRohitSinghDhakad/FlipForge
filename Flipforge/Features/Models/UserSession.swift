@@ -95,8 +95,15 @@ final class UserSession {
     }
 
     static var paymentStatus: String {
-        fetch(.paymentStatus) ?? "0"
+        get {
+            fetch(.paymentStatus) ?? "0"
+        }
+        set {
+            save(newValue, for: .paymentStatus)
+        }
     }
+    
+    
 
     static var isAutoLogin: Bool {
         fetch(.isAutoLogin) ?? false

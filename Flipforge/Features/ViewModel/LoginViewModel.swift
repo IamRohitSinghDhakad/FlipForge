@@ -67,8 +67,7 @@ final class LoginViewModel: ObservableObject {
                         email: response.result?.email ?? "",
                         mobile: response.result?.mobile ?? "",
                         dateOfBirth: response.result?.dob ?? "",
-                        profileImage: response.result?.userImage ?? "",
-                        paymentStatus: response.result?.status ?? ""
+                        profileImage: response.result?.userImage ?? ""
                     )
                 }
                 isLoginSuccessful = true
