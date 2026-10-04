@@ -84,72 +84,72 @@ extension MasterSettingsViewModel{
     func validate() -> Bool {
 
         if settings.hardMoneyRate.isEmpty {
-            showError("Please enter Hard Money Rate")
+            showAlert("Please enter Hard Money Rate")
             return false
         }
 
         if settings.hardMoneyPoints.isEmpty {
-            showError("Please enter Hard Money Points")
+            showAlert("Please enter Hard Money Points")
             return false
         }
 
         if settings.hardMoneyFees.isEmpty {
-            showError("Please enter Hard Money Fees")
+            showAlert("Please enter Hard Money Fees")
             return false
         }
 
         if settings.hardMoneyFinance.isEmpty {
-            showError("Please enter Hard Money Finance")
+            showAlert("Please enter Hard Money Finance")
             return false
         }
 
         if settings.privateCapitalRate.isEmpty {
-            showError("Please enter Private Capital Rate")
+            showAlert("Please enter Private Capital Rate")
             return false
         }
 
         if settings.privateCapitalPoints.isEmpty {
-            showError("Please enter Private Capital Points")
+            showAlert("Please enter Private Capital Points")
             return false
         }
 
         if settings.privateCapitalFees.isEmpty {
-            showError("Please enter Private Capital Fees")
+            showAlert("Please enter Private Capital Fees")
             return false
         }
 
         if settings.privateCapitalFinance.isEmpty {
-            showError("Please enter Private Capital Finance")
+            showAlert("Please enter Private Capital Finance")
             return false
         }
 
         if settings.titleCostsPurchasePercent.isEmpty {
-            showError("Please enter Purchase Title Cost")
+            showAlert("Please enter Purchase Title Cost")
             return false
         }
 
         if settings.titleCostsSalePercent.isEmpty {
-            showError("Please enter Sale Title Cost")
+            showAlert("Please enter Sale Title Cost")
             return false
         }
 
         if settings.utilitiesPerMonth.isEmpty {
-            showError("Please enter Utilities Per Month")
+            showAlert("Please enter Utilities Per Month")
             return false
         }
 
         if settings.insurancePerMonth.isEmpty {
-            showError("Please enter Insurance Per Month")
+            showAlert("Please enter Insurance Per Month")
             return false
         }
 
         if settings.propertyTaxRate.isEmpty {
-            showError("Please enter Property Tax Rate")
+            showAlert("Please enter Property Tax Rate")
             return false
         }
 
         if settings.realtorFeesPercent.isEmpty {
-            showError("Please enter Realtor Fees")
+            showAlert("Please enter Realtor Fees")
             return false
         }
 

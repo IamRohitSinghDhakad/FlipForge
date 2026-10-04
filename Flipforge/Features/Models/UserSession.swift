@@ -30,6 +30,7 @@ final class UserSession {
         case profileImage = "profile_image"
         case paymentStatus = "payment_status"
         case isAutoLogin = "is_auto_login"
+        case isShowPayment = "is_show_payment"
     }
 
     // MARK: - Generic Save
@@ -103,6 +104,20 @@ final class UserSession {
         }
     }
     
+    
+    static var isSubscribed: Bool {
+
+        isShowPayment == "1"
+    }
+    
+    static var isShowPayment: String {
+        get {
+            fetch(.isShowPayment) ?? "0"
+        }
+        set {
+            save(newValue, for: .isShowPayment)
+        }
+    }
     
 
     static var isAutoLogin: Bool {

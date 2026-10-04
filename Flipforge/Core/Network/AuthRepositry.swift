@@ -57,6 +57,12 @@ protocol AuthRepositoryProtocol {
     func activeSubscription(
         userId: String
     ) async throws -> SubscriptionStatusResponse
+    
+    func deleteAccount(
+        userId: String
+    ) async throws -> BaseResponse
+    
+    func paymentStatus() async throws -> PaymentStatusResponse
 }
 
 
@@ -219,5 +225,21 @@ final class AuthRepository: AuthRepositoryProtocol {
         )
     }
     
+    func deleteAccount(
+        userId: String
+    ) async throws -> BaseResponse {
+
+        let endpoint = APIEndpoint.deleteAccount(
+            userId: userId
+        )
+
+        return try await network.fetch(from: endpoint)
+    }
+    
+    func paymentStatus() async throws -> PaymentStatusResponse {
+
+        let endpoint = APIEndpoint.paymentStatus
+        return try await network.fetch(from: endpoint)
+    }
     
 }

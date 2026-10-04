@@ -19,11 +19,6 @@ struct MasterSettingsView: View {
         
         ZStack {
             
-            Image(.loginBg)
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-            
             VStack(spacing: 0) {
                 
                 CustomNavigationBar(
@@ -51,8 +46,20 @@ struct MasterSettingsView: View {
                 }
                 .keyboardManager()
             }
+        }.alert(
+            "Error",
+            isPresented: $vm.showAlert
+        ) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(vm.alertMessage)
         }
+        
+        
         .navigationBarBackButtonHidden(true)
+        .background(
+            BackgroundView()
+        )
         
         .task {
             do {

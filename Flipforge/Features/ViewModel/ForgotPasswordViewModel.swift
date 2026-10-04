@@ -29,12 +29,12 @@ final class ForgotPasswordViewModel: BaseViewModel {
         )
 
         guard !email.isEmpty else {
-            showError("Please enter your email address.")
+            showAlert("Please enter your email address.")
             return
         }
 
         guard ValidationManager.isValidEmail(email) else {
-            showError("Please enter a valid email address.")
+            showAlert("Please enter a valid email address.")
             return
         }
 
@@ -47,20 +47,22 @@ final class ForgotPasswordViewModel: BaseViewModel {
                 email: email
             )
 
-            if response.status == 1 {
+            if response.status == "1" {
 
-                showSuccess(
-                    title: "Success",
-                    message: response.message
-                )
+                self.email = ""
+
+                showSuccessAlert("""
+                    If an account exists for this email address, a password reset link has been sent to your registered email.
+
+                    Please check your inbox and spam folder.
+                    """)
 
                 resetCompleted = true
 
             } else {
 
-                showError(response.message)
+                showAlert(response.result)
             }
-
         } catch {
 
             showApiError(error)

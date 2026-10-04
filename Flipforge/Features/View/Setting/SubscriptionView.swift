@@ -18,11 +18,6 @@ struct SubscriptionView: View {
 
         ZStack {
 
-            Image(.loginBg)
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-
             VStack(spacing: 0) {
 
                 CustomNavigationBar(
@@ -72,6 +67,9 @@ struct SubscriptionView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .background(
+            BackgroundView()
+        )
         
         .onAppear{
             Task{

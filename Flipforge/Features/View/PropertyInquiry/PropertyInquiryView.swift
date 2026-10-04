@@ -33,11 +33,6 @@ struct PropertyInquiryView: View {
         
         ZStack {
             
-            Image(.loginBg)
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-            
             
             VStack(spacing: 0) {
                 
@@ -72,14 +67,21 @@ struct PropertyInquiryView: View {
                 }.keyboardManager()
             }
             // }
-        }.navigationBarBackButtonHidden(true)
+        }.alert(
+            "Error",
+            isPresented: $vm.showAlert
+        ) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(vm.alertMessage)
+        }
         
-            .onAppear {
-                
-                //                if case let .edit(property) = mode {
-                //                    vm.configure(with: property)
-                //                }
-            }
+        .navigationBarBackButtonHidden(true)
+        
+        .background(
+            BackgroundView()
+        )
+        
     }
     
     
@@ -260,11 +262,11 @@ struct PropertyInquiryView: View {
         HStack(spacing: 16) {
             
             CustomButton(title: "SAVE") {
-
+                
                 guard vm.validate() else {
                     return
                 }
-
+                
                 Task {
                     LoadingManager.shared.show()
                     defer { LoadingManager.shared.hide() }
@@ -280,11 +282,11 @@ struct PropertyInquiryView: View {
             }
             
             CustomButton(title: "SEE RESULT") {
-
+                
                 guard vm.validate() else {
                     return
                 }
-
+                
                 Task {
                     LoadingManager.shared.show()
                     defer { LoadingManager.shared.hide() }

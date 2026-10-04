@@ -11,15 +11,11 @@ struct HomeView: View {
     
     @StateObject private var vm = HomeViewModel()
     @EnvironmentObject var router: Router
+    @State private var isCheckingPayment = false
     
     var body: some View {
         
         ZStack {
-            
-            Image(.loginBg)
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
             
             VStack(spacing: 0) {
                 
@@ -65,7 +61,7 @@ struct HomeView: View {
                         }
                     }
                     .padding(.horizontal, 12)
-                    .padding(.bottom, 120)
+                    .padding(.bottom, 100)
                 }.emptyState(
                     when: vm.properties.isEmpty,
                     icon: "house.circle",
@@ -73,7 +69,18 @@ struct HomeView: View {
                     message: "Tap the + button to create your first property."
                 )
             }
+        }.alert(
+            "Error",
+            isPresented: $vm.showAlert
+        ) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(vm.alertMessage)
         }
+        
+        .background(
+            BackgroundView()
+        )
         
         .alert(
             "Delete Property",
@@ -121,10 +128,21 @@ struct HomeView: View {
             Text("Please take a membership first to continue.")
         }
         
+        .onChange(of: vm.isNavigateToMembership) { newValue, oldValue in
+            print(oldValue)
+            if vm.isNavigateToMembership == true{
+                vm.isNavigateToMembership = false
+                router.push(.subscription)
+                
+            }
+        }
+        
         .onAppear {
+            LoadingManager.shared.show()
             Task {
                 await vm.loadData()
-                await vm.checkSubscription()
+                await vm.loadPaymentStatus()
+                LoadingManager.shared.hide()
             }
         }
     }

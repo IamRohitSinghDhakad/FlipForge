@@ -18,16 +18,19 @@ struct FlipforgeApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(
-                    coordinator
-                ).globalLoading()
-            
-                .environmentObject(
-                    router
-                )
-                .customToast(
-                    manager: DependencyContainer.shared.toastManager
-                )
+                .environmentObject(coordinator)
+                .environmentObject(router)
+//            RootView()
+//                .environmentObject(
+//                    coordinator
+//                ).globalLoading()
+//            
+//                .environmentObject(
+//                    router
+//                )
+//                .customToast(
+//                    manager: DependencyContainer.shared.toastManager
+//                )
         }
     }
 }

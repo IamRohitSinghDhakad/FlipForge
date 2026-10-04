@@ -19,10 +19,6 @@ struct WebPageView: View {
         
         ZStack {
             
-            Image(.loginBg)
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
             
             VStack(spacing: 8) {
 
@@ -62,6 +58,10 @@ struct WebPageView: View {
             }
         }
         .globalLoading()
+        .background(
+            BackgroundView()
+        )
+        
         .navigationBarBackButtonHidden(true)
     }
 }

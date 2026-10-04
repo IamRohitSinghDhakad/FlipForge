@@ -13,15 +13,11 @@ struct SettingsView: View {
     @EnvironmentObject var coordinator: AppCoordinator
     @EnvironmentObject var router: Router
     @Environment(\.openURL) private var openURL
+    @State private var showDeleteAlert = false
 
     var body: some View {
 
         ZStack {
-
-            Image(.loginBg)
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
 
@@ -45,13 +41,13 @@ struct SettingsView: View {
                         )
                     }
 
-                    SettingsRow(
-                        icon: "crown.fill",
-                        title: "Subscription"
-                    ) {
-                        router.push(
-                            .subscription
-                        )
+                    if UserSession.isSubscribed {
+                        SettingsRow(
+                            icon: "crown.fill",
+                            title: "Subscription"
+                        ) {
+                            router.push(.subscription)
+                        }
                     }
 
                     SettingsRow(
@@ -85,7 +81,7 @@ struct SettingsView: View {
                         icon: "trash",
                         title: "Delete Account"
                     ) {
-
+                        showDeleteAlert = true
                     }
 
                     DangerSettingsRow(
@@ -100,6 +96,48 @@ struct SettingsView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 120)
             }
+        }.alert(
+            "Error",
+            isPresented: $vm.showAlert
+        ) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(vm.alertMessage)
+        }
+        
+        .background(
+            BackgroundView()
+        )
+        
+        
+        .alert(
+            "Delete Account",
+            isPresented: $showDeleteAlert
+        ) {
+
+            Button(
+                "Delete",
+                role: .destructive
+            ) {
+                Task {
+                    let success = await vm.deleteAccount()
+
+                    if success {
+                        coordinator.showLogin()
+                    }
+                }
+            }
+
+            Button(
+                "Cancel",
+                role: .cancel
+            ) { }
+
+        } message: {
+
+            Text(
+                "Are you sure you want to delete your account?\n\nThis action is permanent and cannot be undone. All your data will be permanently removed."
+            )
         }
         
         .onAppear{

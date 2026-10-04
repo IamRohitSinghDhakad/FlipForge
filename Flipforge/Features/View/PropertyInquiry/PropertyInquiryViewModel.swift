@@ -199,77 +199,77 @@ extension PropertyInquiryViewModel{
      func validate() -> Bool {
 
         if propertyAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            showError("Please enter Property Address")
+            showAlert("Please enter Property Address")
             return false
         }
 
         if totalSqFeet.isEmpty {
-            showError("Please enter Total Sq. Feet")
+            showAlert("Please enter Total Sq. Feet")
             return false
         }
 
         if bedBath.isEmpty {
-            showError("Please enter Bed / Bath")
+            showAlert("Please enter Bed / Bath")
             return false
         }
 
         if numberOfUnits.isEmpty {
-            showError("Please enter Number of Units")
+            showAlert("Please enter Number of Units")
             return false
         }
 
         if dateOfEstimate.isEmpty {
-            showError("Please select Date of Estimate")
+            showAlert("Please select Date of Estimate")
             return false
         }
 
         if arv.isEmpty {
-            showError("Please enter ARV")
+            showAlert("Please enter ARV")
             return false
         }
 
         if repairCosts.isEmpty {
-            showError("Please enter Estimated Repair Costs")
+            showAlert("Please enter Estimated Repair Costs")
             return false
         }
 
         if purchasePrice.isEmpty {
-            showError("Please enter Purchase Price")
+            showAlert("Please enter Purchase Price")
             return false
         }
 
         if holdingMonths.isEmpty {
-            showError("Please enter Holding Time")
+            showAlert("Please enter Holding Time")
             return false
         }
 
         if inspectionCost.isEmpty {
-            showError("Please enter Inspection Cost")
+            showAlert("Please enter Inspection Cost")
             return false
         }
 
         if miscCost.isEmpty {
-            showError("Please enter CFK / Misc Cost")
+            showAlert("Please enter CFK / Misc Cost")
             return false
         }
 
         if hoaFees.isEmpty {
-            showError("Please enter HOA / Condo Fees")
+            showAlert("Please enter HOA / Condo Fees")
             return false
         }
 
         if monthlyMiscCost.isEmpty {
-            showError("Please enter Misc Holding Costs")
+            showAlert("Please enter Misc Holding Costs")
             return false
         }
 
         if stagingCost.isEmpty {
-            showError("Please enter Staging Costs")
+            showAlert("Please enter Staging Costs")
             return false
         }
 
         if photosInspectionCost.isEmpty {
-            showError("Please enter Photos / Inspection Costs")
+            showAlert("Please enter Photos / Inspection Costs")
             return false
         }
 

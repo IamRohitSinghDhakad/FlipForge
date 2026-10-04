@@ -19,74 +19,55 @@ struct MainTabView: View {
     @State private var selectedTab: AppTab = .home
     
     var body: some View {
-        
+
         NavigationStack(path: $router.path) {
-            
+
             ZStack(alignment: .bottom) {
-                
+
                 tabContent
-                
-                CustomTabBar(
-                    selectedTab: $selectedTab
-                )
-                .padding(.horizontal, 12)
-                .padding(.bottom, 10)
+
+                CustomTabBar(selectedTab: $selectedTab)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 0)
+                    .zIndex(100)
             }
-            .ignoresSafeArea(.keyboard)
-            
-            .navigationDestination(
-                for: AppRoute.self
-            ) { route in
-                
+            .ignoresSafeArea(.container, edges: .bottom)
+            .navigationDestination(for: AppRoute.self) { route in
+
                 switch route {
-                    
+
                 case .propertyInquiry(let mode):
-                    
-                    PropertyInquiryView(
-                        mode: mode
-                    )
-                    
+                    PropertyInquiryView(mode: mode)
+
                 case .dealAnalysis(let result):
-                    
-                    PropertyResultView(
-                        result: result
-                    )
+                    PropertyResultView(result: result)
+
                 case .profile:
-                    
                     Text("Profile")
-                    
+
                 case .settings:
-                    
                     Text("Settings")
-                    
+
                 case .masterSettings:
-                    
                     MasterSettingsView()
-                    
+
                 case .subscription:
-                    
                     SubscriptionView()
-                    
-                case .webPage(
-                    let title,
-                    let url
-                ):
-                    
+
+                case .webPage(let title, let url):
                     WebPageView(
                         title: title,
                         urlString: url
                     )
+
                 case .subscriptionCheckout(let url):
 
-                    SubscriptionWebView(
-                        urlString: url
-                    ) {
+                    SubscriptionWebView(urlString: url) {
                         coordinator.showMainTab()
                     }
-                    
                 }
             }
-        }
+        }.globalLoading()
     }
 }
 

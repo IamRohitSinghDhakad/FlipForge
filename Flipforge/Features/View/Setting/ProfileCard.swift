@@ -17,7 +17,7 @@ struct ProfileCardView: View {
             
             RemoteImage(
                 url: profile?.userImage,
-                placeholder: "profile",
+                placeholder: "logo",
                 width: 80,
                 height: 80,
                 isCircle: true

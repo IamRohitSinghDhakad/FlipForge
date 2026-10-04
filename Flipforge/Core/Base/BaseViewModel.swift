@@ -12,6 +12,10 @@ import Combine
 class BaseViewModel: ObservableObject {
 
     let toastManager = DependencyContainer.shared.toastManager
+    @Published var showAlert = false
+    @Published var alertMessage = ""
+    @Published var showSuccessAlert = false
+    @Published var alertSuccessMessage = ""
 
     func showSuccess(
         title: String,
@@ -44,6 +48,16 @@ class BaseViewModel: ObservableObject {
             title: title,
             message: message
         )
+    }
+    
+    func showAlert(_ message: String) {
+        alertMessage = message
+        showAlert = true
+    }
+    
+    func showSuccessAlert(_ message: String) {
+        alertSuccessMessage = message
+        showSuccessAlert = true
     }
 
     func showApiError(_ error: Error) {

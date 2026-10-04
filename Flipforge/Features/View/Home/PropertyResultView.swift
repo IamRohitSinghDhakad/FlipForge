@@ -22,11 +22,6 @@ struct PropertyResultView: View {
         
         ZStack {
             
-            Image(.loginBg)
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-            
             VStack(spacing: 0) {
                 
                 headerSection
@@ -53,6 +48,9 @@ struct PropertyResultView: View {
         }
         .navigationBarBackButtonHidden(true)
         
+        .background(
+            BackgroundView()
+        )
         
         .onChange(of: vm.pdfURL) {
             showShareSheet = vm.pdfURL != nil

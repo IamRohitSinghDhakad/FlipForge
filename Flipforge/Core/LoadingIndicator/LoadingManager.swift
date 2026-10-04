@@ -38,7 +38,7 @@ final class LoadingManager: ObservableObject {
 
 struct GlobalLoadingModifier: ViewModifier {
 
-    @StateObject
+    @ObservedObject
     private var loadingManager = LoadingManager.shared
 
     func body(content: Content) -> some View {

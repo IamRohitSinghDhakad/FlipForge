@@ -200,9 +200,7 @@ struct SubscriptionCheckoutView: View {
 
         ZStack {
 
-            Image(.loginBg)
-                .resizable()
-                .ignoresSafeArea()
+         
 
             SubscriptionWebView(
                 urlString: url
@@ -211,6 +209,10 @@ struct SubscriptionCheckoutView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .background(
+            BackgroundView()
+        )
+        
         .toolbar {
 
             ToolbarItem(

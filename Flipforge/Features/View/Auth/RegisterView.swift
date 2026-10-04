@@ -67,6 +67,14 @@ struct RegisterView: View {
                 }
             }
         }
+        .alert(
+            "Error",
+            isPresented: $vm.showAlert
+        ) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(vm.alertMessage)
+        }
     }
 }
 

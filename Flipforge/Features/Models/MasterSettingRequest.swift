@@ -7,8 +7,9 @@
 
 struct BaseResponse: Codable {
 
-    let message: String
-    let status: Int
+    @FlexibleString var result: String
+    @FlexibleString var message: String
+    @FlexibleString var status: String
 }
 
 struct MasterSettingsRequest {

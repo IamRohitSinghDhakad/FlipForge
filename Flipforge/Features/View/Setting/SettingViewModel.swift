@@ -23,7 +23,7 @@ final class SettingsViewModel: BaseViewModel {
     func loadProfile() async {
 
         guard !UserSession.userId.isEmpty else {
-            showError("User not found.")
+            showAlert("User not found.")
             return
         }
 
@@ -39,7 +39,7 @@ final class SettingsViewModel: BaseViewModel {
             )
 
             guard response.status == 1 else {
-                showError(response.message)
+                showAlert(response.message)
                 return
             }
 
@@ -48,6 +48,34 @@ final class SettingsViewModel: BaseViewModel {
         } catch {
 
             showApiError(error)
+        }
+    }
+    
+    func deleteAccount() async -> Bool {
+
+        LoadingManager.shared.show()
+        defer { LoadingManager.shared.hide() }
+
+        do {
+
+            let response = try await repository.deleteAccount(
+                userId: UserSession.userId
+            )
+
+            guard response.status == "1" else {
+
+                showAlert(response.message)
+                return false
+            }
+
+            UserSession.logout()
+
+            return true
+
+        } catch {
+
+            showApiError(error)
+            return false
         }
     }
 }

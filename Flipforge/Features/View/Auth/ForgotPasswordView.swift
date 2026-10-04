@@ -54,12 +54,30 @@ struct ForgotPasswordView: View {
                     Spacer()
                 }
             }
+        }        .alert(
+            "Error",
+            isPresented: $vm.showAlert
+        ) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(vm.alertMessage)
+        }
+        
+        .alert(
+            "Success",
+            isPresented: $vm.showSuccessAlert
+        ) {
+            Button("OK", role: .cancel) {
+                coordinator.showLogin()
+            }
+        } message: {
+            Text(vm.alertSuccessMessage)
         }
         
         .onChange(of: vm.resetCompleted) { _, completed in
-
+            
             if completed {
-                coordinator.showLogin()
+               // coordinator.showLogin()
             }
         }
     }

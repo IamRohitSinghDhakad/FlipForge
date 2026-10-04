@@ -76,3 +76,16 @@ extension View {
             }
     }
 }
+
+
+
+struct BackgroundView: View {
+
+    var body: some View {
+
+        Image(.loginBg)
+            .resizable()
+            .scaledToFill()
+            .ignoresSafeArea()
+    }
+}

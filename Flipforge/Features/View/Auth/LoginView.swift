@@ -68,8 +68,8 @@ struct LoginView: View {
         }
         
         .onAppear{
-            viewModel.email = "goswamipuriarun@gmail.com"
-            viewModel.password = "Arun@12345"
+//            viewModel.email = "goswamipuriarun@gmail.com"
+//            viewModel.password = "Arun@12345"
         }
         
     }

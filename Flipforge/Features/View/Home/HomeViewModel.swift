@@ -19,7 +19,7 @@ final class HomeViewModel: BaseViewModel {
     @Published var isSubscribed = false
     @Published var showMembershipAlert = false
     @Published var propertyToDelete: PropertyModel?
-
+    @Published var isNavigateToMembership = false
     private let repository: AuthRepositoryProtocol
 
     init(repository: AuthRepositoryProtocol? = nil) {
@@ -29,7 +29,7 @@ final class HomeViewModel: BaseViewModel {
     func loadData() async {
 
         guard !UserSession.userId.isEmpty else {
-            showError("User not found.")
+            showAlert("User not found.")
             return
         }
 
@@ -61,6 +61,7 @@ final class HomeViewModel: BaseViewModel {
                 return
             }
             properties = propertyResponse.result
+            
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -80,6 +81,12 @@ final class HomeViewModel: BaseViewModel {
             isSubscribed = subscribed
 
             UserSession.paymentStatus = subscribed ? "1" : "0"
+            
+            print(!(response.result?.subscription_id ?? "").isEmpty)
+            
+            if !isSubscribed{
+                self.isNavigateToMembership = true
+            }
 
         } catch {
 
@@ -88,11 +95,33 @@ final class HomeViewModel: BaseViewModel {
         }
     }
     
+    func loadPaymentStatus() async {
+
+        do {
+
+            let response = try await repository.paymentStatus()
+
+            UserSession.isShowPayment =
+                response.message.payment_status == 1 ? "1" : "0"
+            
+            print(response.message.payment_status)
+            
+            if response.message.payment_status == 1{
+                await self.checkSubscription()
+                
+            }
+
+        } catch {
+
+            print(error)
+        }
+    }
+    
     
     func deleteProperty(_ property: PropertyModel) async {
 
         guard !UserSession.userId.isEmpty else {
-            showError("User not found.")
+            showAlert("User not found.")
             return
         }
 
@@ -111,8 +140,8 @@ final class HomeViewModel: BaseViewModel {
                 )
             )
 
-            guard response.status == 1 else {
-                showError(response.message)
+            guard response.status == "1" else {
+                showAlert(response.message)
                 return
             }
 

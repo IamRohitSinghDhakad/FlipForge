@@ -20,55 +20,57 @@ struct RemoteImage: View {
     var isCircle = false
     var cornerRadius: CGFloat = 12
 
+    private var imageURL: URL? {
+        guard let url,
+              !url.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              let validURL = URL(string: url)
+        else {
+            return nil
+        }
+
+        return validURL
+    }
+
     var body: some View {
 
-        Group {
+        AsyncImage(url: imageURL) { phase in
 
-            if isCircle {
+            switch phase {
 
-                AsyncImage(url: URL(string: url ?? "")) { phase in
+            case .success(let image):
 
-                    switch phase {
+                image
+                    .resizable()
+                    .scaledToFill()
 
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
+            case .empty, .failure:
 
-                    default:
-                        Image(placeholder)
-                            .resizable()
-                            .scaledToFill()
-                    }
+                placeholderImage
 
-                }
-                .frame(width: width, height: height)
-                .clipShape(Circle())
+            @unknown default:
 
-            } else {
-
-                AsyncImage(url: URL(string: url ?? "")) { phase in
-
-                    switch phase {
-
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-
-                    default:
-                        Image(placeholder)
-                            .resizable()
-                            .scaledToFill()
-                    }
-
-                }
-                .frame(width: width, height: height)
-                .clipShape(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                )
-
+                placeholderImage
             }
         }
+        .frame(
+            width: width,
+            height: height
+        )
+        .clipShape(
+            isCircle
+            ? AnyShape(Circle())
+            : AnyShape(
+                RoundedRectangle(
+                    cornerRadius: cornerRadius
+                )
+            )
+        )
+    }
+
+    private var placeholderImage: some View {
+
+        Image(placeholder)
+            .resizable()
+            .scaledToFill()
     }
 }

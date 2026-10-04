@@ -11,9 +11,52 @@ import Foundation
 
 struct SignupResponse: Codable {
 
-    let result: SignupUser
+    let result: SignupResult
     let message: String
     let status: Int
+}
+
+enum SignupResult: Codable {
+
+    case user(SignupUser)
+    case error(String)
+
+    init(from decoder: Decoder) throws {
+
+        let container = try decoder.singleValueContainer()
+
+        if let user = try? container.decode(SignupUser.self) {
+            self = .user(user)
+            return
+        }
+
+        if let message = try? container.decode(String.self) {
+            self = .error(message)
+            return
+        }
+
+        throw DecodingError.typeMismatch(
+            SignupResult.self,
+            .init(
+                codingPath: decoder.codingPath,
+                debugDescription: "Invalid result type"
+            )
+        )
+    }
+
+    func encode(to encoder: Encoder) throws {
+
+        var container = encoder.singleValueContainer()
+
+        switch self {
+
+        case .user(let user):
+            try container.encode(user)
+
+        case .error(let message):
+            try container.encode(message)
+        }
+    }
 }
 
 struct SignupUser: Codable {
